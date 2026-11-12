@@ -157,21 +157,23 @@ async function analyseLaunch(rpc, wallet, L, curve) {
   return out;
 }
 
-async function probe(wallet, rpcUrl, fetchImpl) {
+async function probe(wallet, rpcUrl, fetchImpl, opts) {
+  const lite = !!(opts && opts.lite);
   if (!WALLET_RE.test(wallet || '')) throw new Error('That does not look like a wallet address.');
   if (!rpcUrl) throw new Error('RPC_URL is not set.');
   const rpc = makeRpc(rpcUrl, fetchImpl);
   const t0 = Date.now();
   // Page back through the wallet's history (cheap calls) so we can see its true oldest transaction.
   let sigs = [], before, pages = 0;
-  while (pages < MAX_PAGES) {
+  const maxPages = lite ? 3 : MAX_PAGES;
+  while (pages < maxPages) {
     const page = await rpc('getSignaturesForAddress', [wallet, before ? { limit: 1000, before } : { limit: 1000 }]);
     sigs = sigs.concat(page);
     pages++;
     if (page.length < 1000) break;
     before = page[page.length - 1].signature;
   }
-  const complete = pages < MAX_PAGES || sigs.length % 1000 !== 0;
+  const complete = pages < maxPages || sigs.length % 1000 !== 0;
   const result = { wallet, sample: false, totalSignaturesSeen: sigs.length, historyComplete: complete };
 
   // Wallet age and who first funded it, from the oldest transaction we can see.
@@ -192,6 +194,14 @@ async function probe(wallet, rpcUrl, fetchImpl) {
       }
     }
   }
+
+  if (lite) {
+    result.mode = 'quick';
+    result.note = 'Quick mode: wallet age, funding and activity only. Launch history was not scanned, to save RPC calls.';
+    result.tookMs = Date.now() - t0;
+    return result;
+  }
+  result.mode = 'full';
 
   // Scan the newest signatures for pump.fun launches.
   const ok = sigs.filter((s) => !s.err);

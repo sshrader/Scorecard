@@ -55,3 +55,12 @@ test('probe rejects bad input and handles a wallet with no history', async () =>
   assert.strictEqual(r.launchesFound, 0);
   assert.deepStrictEqual(r.launches, []);
 });
+
+test('quick mode skips the launch scan', async () => {
+  let calls = 0;
+  const fetchImpl = async (u, o) => { calls++; const m = JSON.parse(o.body).method; return { status: 200, json: async () => ({ result: m === 'getSignaturesForAddress' ? [{ signature: 's1', blockTime: 1700000000, slot: 1, err: null }] : null }) }; };
+  const r = await probe('11111111111111111111111111111112', 'http://rpc', fetchImpl, { lite: true });
+  assert.strictEqual(r.mode, 'quick');
+  assert.strictEqual(r.launches, undefined);
+  assert.ok(calls <= 2, 'calls ' + calls);
+});

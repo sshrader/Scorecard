@@ -56,9 +56,10 @@ const server = http.createServer(async (req, res) => {
       const a = crypto.createHash('sha256').update(got).digest(), b = crypto.createHash('sha256').update(want).digest();
       if (!crypto.timingSafeEqual(a, b)) return send(res, 401, { error: 'Wrong test token.' });
       if (probing) return send(res, 429, { error: 'A probe is already running. Wait a moment.' });
-      const wallet = new URL(req.url, 'http://x').searchParams.get('wallet') || '';
+      const q = new URL(req.url, 'http://x').searchParams;
+      const wallet = q.get('wallet') || '';
       probing = true;
-      try { return send(res, 200, await probe(wallet.trim(), process.env.RPC_URL)); }
+      try { return send(res, 200, await probe(wallet.trim(), process.env.RPC_URL, undefined, { lite: q.get('mode') !== 'full' })); }
       catch (e) { return send(res, 400, { error: e.message }); }
       finally { probing = false; }
     }
