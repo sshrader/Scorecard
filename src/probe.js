@@ -93,6 +93,20 @@ function findCreate(tx) {
   return null;
 }
 
+// For diagnosing: the 8-byte instruction ids of every pump.fun instruction in a transaction.
+function pumpDiscs(tx) {
+  const out = [];
+  if (!tx || !tx.meta) return out;
+  const keys = keysOf(tx);
+  const all = (tx.transaction.message.instructions || []).slice();
+  for (const inner of tx.meta.innerInstructions || []) all.push(...inner.instructions);
+  for (const ins of all) {
+    if (keys[ins.programIdIndex] !== PUMP || !ins.data) continue;
+    try { out.push(b58decode(ins.data).subarray(0, 8).toString('hex')); } catch (e) { /* skip */ }
+  }
+  return out;
+}
+
 // Reads the "complete" flag and total supply out of a bonding curve account (base64 data).
 function readCurve(b64) {
   const d = Buffer.from(b64, 'base64');
@@ -182,7 +196,19 @@ async function probe(wallet, rpcUrl, fetchImpl) {
   const seen = new Set();
   const recent = ok.slice(-SCAN_OLD).concat(ok.slice(0, SCAN_NEW)).filter((s) => !seen.has(s.signature) && seen.add(s.signature));
   result.scannedSignatures = recent.length;
-  const txs = await pool(recent, 4, async (s) => { const tx = await getTx(rpc, s.signature).catch(() => null); const c = findCreate(tx); return c ? { ...c, signature: s.signature, blockTime: s.blockTime } : null; });
+  const diag = { fetched: 0, missing: 0, errors: 0, firstError: null, txWithPump: 0, pumpInstructionIds: {} };
+  const txs = await pool(recent, 3, async (s) => {
+    let tx = null;
+    try { tx = await getTx(rpc, s.signature); } catch (e) { diag.errors++; if (!diag.firstError) diag.firstError = scrub(e.message, rpcUrl); }
+    if (tx) diag.fetched++; else if (!diag.firstError || diag.errors === 0) diag.missing++;
+    const d = pumpDiscs(tx);
+    if (d.length) diag.txWithPump++;
+    d.forEach((x) => { diag.pumpInstructionIds[x] = (diag.pumpInstructionIds[x] || 0) + 1; });
+    const c = findCreate(tx);
+    return c ? { ...c, signature: s.signature, blockTime: s.blockTime } : null;
+  });
+  result.diagnostics = diag;
+  result.newestSignatureAt = sigs[0] && sigs[0].blockTime ? new Date(sigs[0].blockTime * 1000).toISOString() : null;
   const launches = txs.filter(Boolean);
   result.launchesFound = launches.length;
   if (!launches.length) { result.launches = []; result.note = 'No pump.fun launches found in the ' + result.scannedSignatures + ' oldest and newest transactions checked (of ' + sigs.length + '). If this is a wallet that only trades, that is expected. If it launches from a different wallet, use that one.'; result.tookMs = Date.now() - t0; return result; }
