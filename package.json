@@ -1,0 +1,13 @@
+{
+  "name": "scorecard",
+  "version": "0.1.0",
+  "description": "Developer scorecard for Solana token launches: scores a creator wallet from how its past launches went. Runs on sample data until a live source is added.",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

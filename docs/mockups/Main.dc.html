@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dev scorecard: strong record</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0f1318}
+a{color:#8fb4ff}a:hover{color:#b9d0ff}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 1560px; background: #0f1318; color: #e8edf3; font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.5; padding: 24px 32px 56px; display: flex; flex-direction: column; gap: 32px">
+
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; max-width: 1160px; width: 100%; margin: 0 auto; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 20px">Draftpad</div>
+<div style="color: #8d9aaa; font-size: 14px">Research / Creator wallets / 7xKp…q9Rt</div>
+</div>
+<div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: #e5b24a; border: 1px solid #5a4a22; background: #231d0e; padding: 4px 10px; border-radius: 6px">SAMPLE DATA</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; max-width: 1160px; width: 100%; margin: 0 auto; box-sizing: border-box; align-items: stretch">
+<div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 16px; justify-content: center">
+<div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; color: #8d9aaa">CREATOR WALLET</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 40px; line-height: 1.1">7xKp…q9Rt</div>
+<button type="button" style="font: 500 13px 'Inter', system-ui, sans-serif; color: #e8edf3; background: #1d2530; border: 1px solid #2c3846; border-radius: 8px; padding: 8px 14px; cursor: pointer; min-height: 44px">Copy address</button>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<sc-for list="{{tags}}" as="t" hint-placeholder-count="4">
+<div style="font-size: 13px; color: #c3ccd8; background: #171d25; border: 1px solid #26303b; border-radius: 999px; padding: 4px 12px">{{t.label}}</div>
+</sc-for>
+</div>
+<div style="color: #8d9aaa; max-width: 60ch">Opened from <span style="color: #e8edf3">$GLORB</span>, trending on the 1H window. This wallet created the token.</div>
+</div>
+
+<div style="flex: 0 1 420px; min-width: 280px; box-sizing: border-box; background: #171d25; border: 1px solid #26303b; border-radius: 16px; padding: 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap">
+<div style="position: relative; width: 132px; height: 132px; flex: none">
+<svg width="132" height="132" viewBox="0 0 132 132" role="img" aria-label="Dev score {{score.value}} out of 100">
+<circle cx="66" cy="66" r="54" fill="none" stroke="#26303b" stroke-width="12"></circle>
+<circle cx="66" cy="66" r="54" fill="none" stroke="{{score.tone}}" stroke-width="12" stroke-linecap="butt" stroke-dasharray="{{score.dash}}" transform="rotate(-90 66 66)"></circle>
+</svg>
+<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center">
+<div style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 40px; line-height: 1">{{score.value}}</div>
+<div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: #8d9aaa">OF 100</div>
+</div>
+</div>
+<div style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<div style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 22px; color: {{score.tone}}">{{score.verdict}}</div>
+<div style="color: #8d9aaa; font-size: 14px">{{score.note}}</div>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; max-width: 1160px; width: 100%; margin: 0 auto; box-sizing: border-box; align-items: stretch">
+<div style="flex: 1 1 520px; min-width: 0; box-sizing: border-box; background: #171d25; border: 1px solid #26303b; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+<h2 style="margin: 0; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 20px">Score breakdown</h2>
+<div style="color: #8d9aaa; font-size: 13px">Weight in the total shown on the right</div>
+</div>
+<sc-for list="{{parts}}" as="p" hint-placeholder-count="6">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; gap: 12px; align-items: baseline">
+<div style="font-weight: 500">{{p.label}}</div>
+<div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; color: #8d9aaa; font-variant-numeric: tabular-nums">{{p.weight}} · <span style="color: {{p.tone}}">{{p.score}}</span></div>
+</div>
+<div style="height: 8px; background: #26303b; border-radius: 4px; overflow: hidden"><div style="height: 8px; width: {{p.width}}; background: {{p.tone}}"></div></div>
+<div style="color: #8d9aaa; font-size: 13px">{{p.detail}}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="flex: 1 1 420px; min-width: 0; box-sizing: border-box; background: #171d25; border: 1px solid #26303b; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px">
+<h2 style="margin: 0; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 20px">What happened to their 14 launches</h2>
+<div style="display: flex; height: 28px; border-radius: 6px; overflow: hidden; gap: 2px">
+<sc-for list="{{outcomes}}" as="o" hint-placeholder-count="3">
+<div style="flex: {{o.count}} 1 0; background: {{o.fg}}; min-width: 4px"></div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap">
+<sc-for list="{{outcomes}}" as="o" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 14px"><div style="width: 10px; height: 10px; background: {{o.fg}}; border-radius: 2px"></div>{{o.name}} <span style="font-family: 'JetBrains Mono', ui-monospace, monospace; color: #8d9aaa">{{o.count}}</span></div>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; border-top: 1px solid #26303b; padding-top: 18px">
+<sc-for list="{{medians}}" as="m" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<div style="color: #8d9aaa; font-size: 13px">{{m.label}}</div>
+<div style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 24px; font-variant-numeric: tabular-nums">{{m.value}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="max-width: 1160px; width: 100%; margin: 0 auto; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 20px">Signals</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px">
+<sc-for list="{{signals}}" as="s" hint-placeholder-count="4">
+<div style="display: flex; gap: 12px; align-items: flex-start; background: #171d25; border: 1px solid #26303b; border-radius: 12px; padding: 14px 16px">
+<div style="flex: none; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; font-weight: 500; color: {{s.fg}}; background: {{s.bg}}; border-radius: 6px; padding: 2px 8px; margin-top: 1px">{{s.label}}</div>
+<div style="min-width: 0">{{s.text}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="max-width: 1160px; width: 100%; margin: 0 auto; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+<h2 style="margin: 0; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 20px">Launch history</h2>
+<div style="color: #8d9aaa; font-size: 13px">Showing 8 of 14, newest first</div>
+</div>
+<div style="overflow-x: auto; background: #171d25; border: 1px solid #26303b; border-radius: 16px">
+<table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px">
+<thead>
+<tr style="text-align: left; color: #8d9aaa; font-size: 12px; letter-spacing: 0.06em">
+<th style="padding: 14px 16px; font-weight: 500">TOKEN</th>
+<th style="padding: 14px 16px; font-weight: 500">LAUNCHED</th>
+<th style="padding: 14px 16px; font-weight: 500">OUTCOME</th>
+<th style="padding: 14px 16px; font-weight: 500; text-align: right">PEAK MCAP</th>
+<th style="padding: 14px 16px; font-weight: 500; text-align: right">TIME TO PEAK</th>
+<th style="padding: 14px 16px; font-weight: 500; text-align: right">DEV SOLD IN 1H</th>
+<th style="padding: 14px 16px; font-weight: 500; text-align: right">HOLDERS AT 24H</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{launches}}" as="l" hint-placeholder-count="8">
+<tr style="border-top: 1px solid #26303b">
+<td style="padding: 14px 16px"><span style="font-weight: 600">{{l.name}}</span> <span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; color: #8d9aaa">{{l.ticker}}</span></td>
+<td style="padding: 14px 16px; color: #c3ccd8">{{l.date}}</td>
+<td style="padding: 14px 16px"><span style="font-size: 13px; font-weight: 500; color: {{l.fg}}; background: {{l.bg}}; border-radius: 999px; padding: 3px 10px">{{l.outcome}}</span></td>
+<td style="padding: 14px 16px; text-align: right; font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums">{{l.peak}}</td>
+<td style="padding: 14px 16px; text-align: right; font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums">{{l.tpeak}}</td>
+<td style="padding: 14px 16px; text-align: right; font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; color: {{l.soldTone}}">{{l.sold}}</td>
+<td style="padding: 14px 16px; text-align: right; font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums">{{l.holders}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<div style="color: #8d9aaa; font-size: 13px; max-width: 80ch">All figures on this page are made-up sample data. A score describes a wallet's past launches and does not predict a future one. Not financial advice.</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1560}}'>
+class Component extends DCLogic {
+renderVals() {
+const GOOD = '#4cc38a', WARN = '#e5b24a', BAD = '#ef6b6b';
+const tone = (n) => (n >= 70 ? GOOD : n >= 40 ? WARN : BAD);
+const value = 84;
+const circ = 2 * Math.PI * 54;
+const oc = {
+Migrated: { fg: GOOD, bg: '#143326' },
+Faded: { fg: WARN, bg: '#352b12' },
+Rugged: { fg: BAD, bg: '#3a1a1a' }
+};
+const parts = [
+{ label: 'Migration rate', weight: '30%', score: 88, detail: '9 of 14 launches filled the curve and moved to a DEX.' },
+{ label: 'Rug history', weight: '25%', score: 91, detail: 'One launch where the creator sold over half their supply in the first hour.' },
+{ label: 'Dev holding behaviour', weight: '15%', score: 76, detail: 'Median creator holding is 4.1% of supply after 24 hours.' },
+{ label: 'Holder spread at 24h', weight: '10%', score: 72, detail: 'Top 10 holders own 21% on average, excluding the curve.' },
+{ label: 'Peak strength', weight: '10%', score: 79, detail: 'Median peak market cap of $412K across all launches.' },
+{ label: 'Wallet transparency', weight: '10%', score: 85, detail: 'Funded from an exchange withdrawal. No linked wallets found.' }
+].map((p) => ({ ...p, width: p.score + '%', tone: tone(p.score) }));
+const launches = [
+['Glorbo', '$GLORB', 'Nov 2', 'Migrated', '$1.2M', '6h 10m', '4%', '3,104'],
+['Nimbus', '$NMBS', 'Oct 27', 'Migrated', '$688K', '2h 45m', '7%', '1,982'],
+['Toasty', '$TOST', 'Oct 19', 'Faded', '$64K', '0h 55m', '2%', '411'],
+['Waffle', '$WAFL', 'Oct 11', 'Migrated', '$402K', '4h 05m', '5%', '1,340'],
+['Zorp', '$ZORP', 'Oct 3', 'Migrated', '$955K', '3h 30m', '3%', '2,611'],
+['Kelp', '$KELP', 'Sep 24', 'Faded', '$38K', '0h 40m', '9%', '266'],
+['Miro', '$MIRO', 'Sep 16', 'Migrated', '$521K', '1h 50m', '6%', '1,408'],
+['Pixelpup', '$PPUP', 'Sep 8', 'Rugged', '$29K', '0h 12m', '61%', '143']
+].map((r) => ({
+name: r[0], ticker: r[1], date: r[2], outcome: r[3], peak: r[4], tpeak: r[5], sold: r[6], holders: r[7],
+fg: oc[r[3]].fg, bg: oc[r[3]].bg,
+soldTone: parseInt(r[6], 10) >= 50 ? BAD : '#e8edf3'
+}));
+return {
+tags: [{ label: '143 days old' }, { label: '14 launches' }, { label: 'Funded by exchange' }, { label: '0 linked wallets' }],
+score: { value, dash: (circ * value / 100).toFixed(1) + ' ' + circ.toFixed(1), tone: tone(value), verdict: 'Strong record', note: 'Most launches reached a DEX and the creator rarely sold early.' },
+parts,
+outcomes: [
+{ name: 'Migrated', count: 9, fg: GOOD },
+{ name: 'Faded', count: 4, fg: WARN },
+{ name: 'Rugged', count: 1, fg: BAD }
+],
+medians: [
+{ label: 'Median peak market cap', value: '$412K' },
+{ label: 'Median time to peak', value: '2h 50m' },
+{ label: 'Median dev sold in 1 hour', value: '5%' },
+{ label: 'Median holders at 24 hours', value: '1,340' }
+],
+signals: [
+{ label: 'POSITIVE', fg: GOOD, bg: '#143326', text: '9 of 14 launches migrated to a DEX.' },
+{ label: 'POSITIVE', fg: GOOD, bg: '#143326', text: 'The creator sold a median of 5% of holdings in the first hour.' },
+{ label: 'WATCH', fg: WARN, bg: '#352b12', text: '4 launches faded within a day, close to the average for new tokens.' },
+{ label: 'RISK', fg: BAD, bg: '#3a1a1a', text: 'Pixelpup: the creator sold 61% of supply in 12 minutes.' }
+],
+launches
+};
+}
+}
+</script>
+</body>
+</html>
