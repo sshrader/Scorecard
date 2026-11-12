@@ -50,3 +50,7 @@ test('the page and its files are served, and nothing outside public', async () =
 test('only GET is allowed', async () => {
   assert.strictEqual((await fetch(base + '/api/trending', { method: 'POST' })).status, 405);
 });
+
+test('the live probe is off unless a test token is configured', async () => {
+  assert.strictEqual((await fetch(base + '/api/probe?wallet=x')).status, 404);
+});

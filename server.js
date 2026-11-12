@@ -4,10 +4,13 @@ const fs = require('fs');
 const path = require('path');
 const { analyse } = require('./src/score');
 const data = require('./src/data');
+const { probe } = require('./src/probe');
+const crypto = require('crypto');
 
 const PORT = Number(process.env.PORT) || 3000;
 const PUBLIC = path.join(__dirname, 'public');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' };
+let probing = false;
 const ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
 
 function send(res, status, body, headers) {
@@ -44,6 +47,20 @@ const server = http.createServer(async (req, res) => {
         rows.push({ ...t, devScore: a ? a.total : null, devVerdict: a ? a.verdict : null, devTone: a ? a.tone : null, devShort: prof ? prof.short : null, devCounts: a ? a.counts : null, devFinished: a ? a.finished : 0, lowConfidence: a ? a.lowConfidence : true });
       }
       return send(res, 200, { sample: !!data.isSample, tokens: rows });
+    }
+    if (p === '/api/probe') {
+      // Test-only. Off unless PROBE_TOKEN is set. Read-only, one run at a time.
+      const want = process.env.PROBE_TOKEN;
+      if (!want || !process.env.RPC_URL) return send(res, 404, { error: 'Not found.' });
+      const got = String(req.headers['x-probe-token'] || '');
+      const a = crypto.createHash('sha256').update(got).digest(), b = crypto.createHash('sha256').update(want).digest();
+      if (!crypto.timingSafeEqual(a, b)) return send(res, 401, { error: 'Wrong test token.' });
+      if (probing) return send(res, 429, { error: 'A probe is already running. Wait a moment.' });
+      const wallet = new URL(req.url, 'http://x').searchParams.get('wallet') || '';
+      probing = true;
+      try { return send(res, 200, await probe(wallet.trim(), process.env.RPC_URL)); }
+      catch (e) { return send(res, 400, { error: e.message }); }
+      finally { probing = false; }
     }
     const m = /^\/api\/dev\/([^/]+)$/.exec(p);
     if (m) {

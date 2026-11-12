@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scorecard live test</title><link rel="stylesheet" href="/style.css"><script src="/theme.js"></script></head>
+<body><div class="app">
+<header class="top"><a class="brand" href="#" id="home">Scorecard</a><div class="crumb">Live data test</div><div class="pill">TEST ONLY</div></header>
+<main class="col" style="gap:18px;max-width:720px">
+<h1>Live data test</h1>
+<div class="dim">Reads one creator wallet from the chain and shows what the scorecard could use. Read only. Takes up to a minute.</div>
+<input class="search" id="tok" type="password" placeholder="Test token (the PROBE_TOKEN you set)" autocomplete="off" aria-label="Test token">
+<input class="search" id="w" type="text" placeholder="Creator wallet address" autocomplete="off" spellcheck="false" aria-label="Creator wallet address">
+<div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn primary" id="go" type="button">Run</button><button class="btn" id="cp" type="button">Copy result</button></div>
+<pre id="out" class="panel mono" style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;margin:0">Nothing run yet.</pre>
+</main></div>
+<script src="/probe.js"></script></body></html>
