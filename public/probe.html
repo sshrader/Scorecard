@@ -5,8 +5,9 @@
 <header class="top"><a class="brand" href="/">Scorecard</a><div class="crumb">Live data test</div><div class="pill">TEST ONLY</div></header>
 <main class="col" style="gap:18px;max-width:720px">
 <h1>Live data test</h1>
-<div class="dim">Reads one creator wallet from the chain. Read only. Quick mode uses about 3 RPC calls.</div>
+<div class="dim">Reads one pump.fun coin (or a creator wallet) from the chain. Read only. A coin lookup uses about 4 RPC calls. Fill in the coin address, or leave it empty and use a wallet.</div>
 <input class="search" id="tok" type="password" placeholder="Test token (the PROBE_TOKEN you set)" autocomplete="off" aria-label="Test token">
+<input class="search" id="c" type="text" placeholder="Coin address (pump.fun token). Start here." autocomplete="off" spellcheck="false" aria-label="Coin address">
 <input class="search" id="w" type="text" placeholder="Creator wallet address" autocomplete="off" spellcheck="false" aria-label="Creator wallet address">
 <label style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="full" class="cmp"> Also scan launches (uses many more RPC calls)</label>
 <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn primary" id="go" type="button">Run</button><button class="btn" id="cp" type="button">Copy result</button></div>

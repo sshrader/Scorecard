@@ -31,7 +31,7 @@ Set two environment variables where the app runs (Railway Variables, or your PC)
 - `RPC_URL` your mainnet Helius URL (keep it private)
 - `PROBE_TOKEN` any long random password you make up
 
-Then open `/probe.html`, enter the token and a creator wallet, and press Run. It reads the wallet's
+Then open `/probe.html`, enter the token and a coin address (or a creator wallet), and press Run. It reads the wallet's
 pump.fun launches, whether each migrated, how much the creator sold in the first hour, wallet age and who
 funded it. Peak market cap, holders and top-10 share are not pulled yet. The page is off unless
 `PROBE_TOKEN` is set.

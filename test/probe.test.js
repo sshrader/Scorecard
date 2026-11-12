@@ -64,3 +64,40 @@ test('quick mode skips the launch scan', async () => {
   assert.strictEqual(r.launches, undefined);
   assert.ok(calls <= 2, 'calls ' + calls);
 });
+
+test('curve address maths: wallets are on the curve, derived addresses are not, and encoding round trips', () => {
+  const { isOnCurve, curveFor, b58encode } = require('../src/probe');
+  assert.ok(isOnCurve(b58decode('EorUCLm8XFjpc9L6awowmWtKU8Bqk8Wa3SJ3GB2ubfFG')));
+  const pda = curveFor('9dTY7gy58w2hdfh2LrnLRm8uEw9mTuPka6uWwrrRpump');
+  assert.ok(!isOnCurve(b58decode(pda)));
+  assert.strictEqual(b58encode(b58decode(pda)), pda);
+  assert.strictEqual(curveFor('9dTY7gy58w2hdfh2LrnLRm8uEw9mTuPka6uWwrrRpump'), pda);
+});
+
+test('coin probe reads curve state, creator and holders from a fake RPC', async () => {
+  const { probeCoin, curveFor, b58encode } = require('../src/probe');
+  const mint = '9dTY7gy58w2hdfh2LrnLRm8uEw9mTuPka6uWwrrRpump';
+  const curve = curveFor(mint);
+  const creator = b58decode('EorUCLm8XFjpc9L6awowmWtKU8Bqk8Wa3SJ3GB2ubfFG');
+  const d = Buffer.alloc(150);
+  d.writeBigUInt64LE(500000000000000n, 8); d.writeBigUInt64LE(60000000000n, 16); d.writeBigUInt64LE(396550000000000n, 24); d.writeBigUInt64LE(15000000000n, 32); d.writeBigUInt64LE(1000000000000000n, 40);
+  d[48] = 0; creator.copy(d, 49);
+  const fetchImpl = async (u, o) => {
+    const { method } = JSON.parse(o.body);
+    const r = {
+      getAccountInfo: { value: { owner: '6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P', data: [d.toString('base64'), 'base64'] } },
+      getTokenLargestAccounts: { value: [{ address: 'A1', amount: '400000000000000' }, { address: 'A2', amount: '50000000000000' }] },
+      getMultipleAccounts: { value: [{ data: { parsed: { info: { owner: curve } } } }, { data: { parsed: { info: { owner: b58encode(creator) } } } }] },
+      getTokenAccounts: { token_accounts: [{ amount: '5', owner: 'x' }, { amount: '0', owner: 'y' }] }
+    }[method];
+    return { status: 200, json: async () => ({ result: r }) };
+  };
+  const r = await probeCoin(mint, 'http://rpc', fetchImpl);
+  assert.strictEqual(r.migrated, false);
+  assert.strictEqual(r.creator, b58encode(creator));
+  assert.strictEqual(r.curveProgressPct, 50);
+  assert.strictEqual(r.top10Pct, 5);
+  assert.strictEqual(r.creatorHoldsPct, 5);
+  assert.strictEqual(r.holders, 1);
+  await assert.rejects(() => probeCoin('bad', 'http://rpc', fetchImpl), /coin address/);
+});

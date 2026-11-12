@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { analyse } = require('./src/score');
 const data = require('./src/data');
-const { probe } = require('./src/probe');
+const { probe, probeCoin } = require('./src/probe');
 const crypto = require('crypto');
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -58,8 +58,9 @@ const server = http.createServer(async (req, res) => {
       if (probing) return send(res, 429, { error: 'A probe is already running. Wait a moment.' });
       const q = new URL(req.url, 'http://x').searchParams;
       const wallet = q.get('wallet') || '';
+      const coin = (q.get('coin') || '').trim();
       probing = true;
-      try { return send(res, 200, await probe(wallet.trim(), process.env.RPC_URL, undefined, { lite: q.get('mode') !== 'full' })); }
+      try { if (coin) return send(res, 200, await probeCoin(coin, process.env.RPC_URL)); return send(res, 200, await probe(wallet.trim(), process.env.RPC_URL, undefined, { lite: q.get('mode') !== 'full' })); }
       catch (e) { return send(res, 400, { error: e.message }); }
       finally { probing = false; }
     }
