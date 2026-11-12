@@ -3,5 +3,5 @@
 (function () {
   var saved = null;
   try { saved = localStorage.getItem('sc.theme'); } catch (e) { /* storage blocked: use default */ }
-  document.documentElement.setAttribute('data-theme', ['neon', 'arcade', 'classic'].indexOf(saved) >= 0 ? saved : 'neon');
+  document.documentElement.setAttribute('data-theme', ['neon', 'arcade', 'future', 'classic'].indexOf(saved) >= 0 ? saved : 'neon');
 })();

@@ -18,6 +18,14 @@
   --radius:0px;--bw:3px;--shadow:5px 5px 0 #080316;--glow:none;
   --h1:20px;--h2:13px;--addr:20px;--ring-n:26px;--fs:15px;
   --scan:none;color-scheme:dark}
+:root[data-theme="future"]{
+  --bg:#05060f;--bg2:#0b0e22;--panel:rgba(20,26,58,.55);--line:rgba(120,150,255,.18);--line2:rgba(140,170,255,.38);--fg:#eef2ff;--dim:#8a95c9;--soft:#c3cbf2;
+  --good:#2ef2c8;--warn:#ffc86b;--bad:#ff5c8a;--info:#7aa7ff;
+  --good-bg:rgba(46,242,200,.12);--warn-bg:rgba(255,200,107,.12);--bad-bg:rgba(255,92,138,.14);--info-bg:rgba(122,167,255,.14);
+  --accent:#7c6cff;--accent-ink:#ffffff;
+  --display:'Orbitron','Space Grotesk',system-ui,sans-serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --radius:18px;--bw:1px;--shadow:0 8px 40px rgba(60,80,255,.14),inset 0 1px 0 rgba(255,255,255,.07);--glow:none;
+  --h1:30px;--h2:15px;--addr:30px;--ring-n:30px;--fs:15px;--scan:none;color-scheme:dark}
 :root[data-theme="classic"]{
   --bg:#0f1318;--bg2:#12181f;--panel:#171d25;--line:#26303b;--line2:#2c3846;--fg:#e8edf3;--dim:#8d9aaa;--soft:#c3ccd8;
   --good:#4cc38a;--warn:#e5b24a;--bad:#ef6b6b;--info:#8fb4ff;
@@ -152,3 +160,25 @@ tr.link{cursor:pointer}tr.link:hover td{background:var(--bg2)}
 .sharewrap canvas{width:100%;height:auto;border:var(--bw) solid var(--line2);border-radius:var(--radius);display:block}
 @media(max-width:700px){.cmpgrid,.cmprow{grid-template-columns:1fr}}
 @media(max-width:560px){:root{--addr:26px;--h1:24px}:root[data-theme="arcade"]{--addr:16px;--h1:16px}}
+
+/* Future: frosted glass over a deep-space glow, cool gradient accents */
+:root[data-theme="future"] body{background-image:radial-gradient(60% 40% at 15% -5%,rgba(124,108,255,.35),transparent 70%),radial-gradient(50% 40% at 95% 5%,rgba(46,242,200,.18),transparent 70%),radial-gradient(70% 50% at 50% 110%,rgba(255,92,138,.12),transparent 70%);background-attachment:fixed}
+:root[data-theme="future"] .panel,:root[data-theme="future"] .scroll,:root[data-theme="future"] .signal,:root[data-theme="future"] .dock,:root[data-theme="future"] .seg,:root[data-theme="future"] .search,:root[data-theme="future"] .btn{-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+:root[data-theme="future"] .brand{background:linear-gradient(90deg,#9aa8ff,#2ef2c8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.14em;font-size:17px}
+:root[data-theme="future"] h1{background:linear-gradient(90deg,#fff,#a9b6ff 60%,#2ef2c8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.04em}
+:root[data-theme="future"] h2{letter-spacing:.06em;text-transform:uppercase}
+:root[data-theme="future"] .btn.primary,:root[data-theme="future"] .fchip[aria-pressed="true"],:root[data-theme="future"] .seg button[aria-pressed="true"]{background:linear-gradient(135deg,#7c6cff,#2ea8ff);border-color:transparent;color:#fff;box-shadow:0 0 22px rgba(124,108,255,.55)}
+:root[data-theme="future"] .bar{height:6px;border-radius:99px;background:rgba(255,255,255,.08)}
+:root[data-theme="future"] .bar>div{height:6px;border-radius:99px;box-shadow:0 0 12px currentColor}
+:root[data-theme="future"] .fill-good{background:linear-gradient(90deg,#1fb8ff,#2ef2c8)}
+:root[data-theme="future"] .fill-warn{background:linear-gradient(90deg,#ffa86b,#ffd36b)}
+:root[data-theme="future"] .fill-bad{background:linear-gradient(90deg,#ff5c8a,#ff8a5c)}
+:root[data-theme="future"] .ring .val{filter:drop-shadow(0 0 8px currentColor);stroke-linecap:round}
+:root[data-theme="future"] .ring .val.good{stroke:#2ef2c8;color:#2ef2c8}:root[data-theme="future"] .ring .val.warn{stroke:#ffc86b;color:#ffc86b}:root[data-theme="future"] .ring .val.bad{stroke:#ff5c8a;color:#ff5c8a}
+:root[data-theme="future"] .ring .trk{stroke:rgba(255,255,255,.08)}
+:root[data-theme="future"] .tone-good,:root[data-theme="future"] .tone-bad{text-shadow:0 0 14px currentColor}
+:root[data-theme="future"] tr.link:hover td{background:rgba(124,108,255,.1)}
+:root[data-theme="future"] .spark path{filter:drop-shadow(0 0 4px currentColor)}
+:root[data-theme="future"] .spark.up{color:var(--good)}:root[data-theme="future"] .spark.down{color:var(--bad)}
+:root[data-theme="future"] .chip,:root[data-theme="future"] .out,:root[data-theme="future"] .bdg{border-radius:999px}
+:root[data-theme="future"] .pill{border-radius:999px}

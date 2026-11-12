@@ -66,7 +66,7 @@
   }
 
   // ---------- theme switcher ----------
-  var THEMES = [['neon', 'Neon'], ['arcade', 'Arcade'], ['classic', 'Classic']];
+  var THEMES = [['neon', 'Neon'], ['arcade', 'Arcade'], ['future', 'Future'], ['classic', 'Classic']];
   function drawThemes() {
     var box = document.getElementById('themes');
     var cur = document.documentElement.getAttribute('data-theme');
