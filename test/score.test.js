@@ -66,3 +66,13 @@ test('sample creators land in the bands they were made for', async () => {
   assert.strictEqual(risky.launches[0].outcome, 'Active');
   assert.strictEqual(strong.counts.Migrated + strong.counts.Faded + strong.counts.Rugged, strong.finished);
 });
+
+test('badges follow the record', async () => {
+  const { analyse: an } = require('../src/score');
+  const keys = async (id) => an(await sample.getProfile(id)).badges.map((b) => b.key);
+  assert.ok((await keys('sample-glorb')).includes('migrator'));
+  assert.ok((await keys('sample-snlz')).includes('serial'));
+  assert.ok((await keys('sample-snlz')).includes('linked'));
+  assert.ok((await keys('sample-new')).includes('rookie'));
+  assert.ok(!(await keys('sample-new')).includes('serial'));
+});

@@ -133,8 +133,28 @@ function analyse(profile) {
     medians: med,
     parts,
     signals: signalsFor(profile, { n, migrated, rugged, counts, med, migRate, rugRate }),
+    badges: badgesFor(profile, { n, migrated, rugged, med, total, migRate, rugRate }),
     launches: all.map((l) => ({ ...l, outcome: outcomeOf(l) }))
   };
+}
+
+// Short labels earned from the record. Each one states a fact, not a prediction.
+function badgesFor(p, x) {
+  const b = [];
+  const add = (key, label, tone, why) => b.push({ key, label, tone, why });
+  if (x.n < MIN_FINISHED) add('rookie', 'Rookie', 'warn', 'Fewer than ' + MIN_FINISHED + ' finished launches.');
+  else {
+    if (x.total >= 80 && x.rugged.length === 0) add('diamond', 'Diamond dev', 'good', 'Score 80+ and no early dumps.');
+    if (x.migRate >= 0.5) add('migrator', 'Migrator', 'good', 'Half or more of launches reached a DEX.');
+    if (x.n >= 5 && x.rugRate >= 0.5) add('serial', 'Serial rugger', 'bad', 'Half or more launches ended in an early dump.');
+    else if (x.rugged.length >= 2) add('dumper', 'Repeat dumper', 'bad', 'Sold over half their supply in the first hour more than once.');
+    if (x.med.devHoldPct24h != null && x.med.devHoldPct24h >= 2 && x.rugRate < 0.2) add('holds', 'Keeps a bag', 'good', 'Usually still holds some supply after 24 hours.');
+  }
+  if (p.funding === 'exchange') add('clean', 'Clean funding', 'good', 'Funded from an exchange withdrawal.');
+  if (p.funding === 'shared' || (p.linkedWallets || 0) >= 5) add('linked', 'Linked wallets', 'bad', 'Wallet cluster shares a funding source.');
+  if (p.ageDays < 14) add('fresh', 'Fresh wallet', 'warn', 'Wallet is under 14 days old.');
+  if (p.ageDays >= 180) add('veteran', 'Veteran', 'good', 'Wallet is 180+ days old.');
+  return b;
 }
 
 function money(n) {
@@ -176,4 +196,4 @@ function signalsFor(profile, x) {
   return out.slice(0, 6);
 }
 
-module.exports = { WEIGHTS, RUG_SELL_PCT, MIN_FINISHED, analyse, outcomeOf, median, interp, money };
+module.exports = { badgesFor, WEIGHTS, RUG_SELL_PCT, MIN_FINISHED, analyse, outcomeOf, median, interp, money };

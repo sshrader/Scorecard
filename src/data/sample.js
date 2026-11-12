@@ -68,6 +68,18 @@ function build(c) {
 
 const PROFILES = Object.fromEntries(CREATORS.map((c) => [c.id, build(c)]));
 
+// A 24-point price line that ends up or down to match the 1h change. Made up, like everything here.
+function spark(t) {
+  const r = rng(t.holders * 7 + t.padScore);
+  const out = [];
+  let v = 100;
+  for (let i = 0; i < 24; i++) {
+    v *= 1 + (r() - 0.5) * 0.12 + (t.change1h / 100) / 24;
+    out.push(Math.round(v * 100) / 100);
+  }
+  return out;
+}
+
 // The trending list the page opens on. Each token points at the wallet that created it.
 const TRENDING = [
   { name: 'Glorbo', ticker: '$GLORB', change1h: 48, liquidityUsd: 212000, holders: 3104, padScore: 91, dev: 'sample-glorb' },
@@ -84,5 +96,5 @@ const TRENDING = [
 module.exports = {
   isSample: true,
   async getProfile(id) { return PROFILES[id] || null; },
-  async listTrending() { return TRENDING.map((t) => ({ ...t })); }
+  async listTrending() { return TRENDING.map((t) => ({ ...t, spark: spark(t) })); }
 };

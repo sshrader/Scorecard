@@ -19,7 +19,7 @@ test('trending rows carry a dev score', async () => {
   const j = await (await fetch(base + '/api/trending')).json();
   assert.strictEqual(j.sample, true);
   assert.ok(j.tokens.length >= 8);
-  for (const t of j.tokens) assert.ok(t.devScore == null || (t.devScore >= 0 && t.devScore <= 100));
+  for (const t of j.tokens) { assert.strictEqual(t.spark.length, 24); assert.ok(t.devScore == null || (t.devScore >= 0 && t.devScore <= 100)); }
 });
 
 test('a creator scorecard comes back with parts, signals and launches', async () => {

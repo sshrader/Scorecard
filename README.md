@@ -11,10 +11,18 @@ dump, how concentrated were the holders.
 
 ```
 npm start      # then open http://localhost:3000
-npm test       # 14 tests
+npm test       # 15 tests
 ```
 
 Needs Node 20 or newer. No dependencies to install.
+
+## What's in the UI
+
+- Three themes (Neon terminal, Degen arcade, Classic), switched top right and remembered in the browser
+- Search, verdict filters and sortable columns on the trending list, with 24h sparklines
+- Watchlist (star a creator) and side-by-side compare (tick two rows)
+- Badges such as "Diamond dev" or "Serial rugger", each with the fact behind it
+- Peak market cap chart per launch, and a downloadable PNG share card in the active theme
 
 ## Put it in `D:\Repo\Scorecard` (Windows, PowerShell)
 
