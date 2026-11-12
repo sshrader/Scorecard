@@ -134,6 +134,8 @@ async function analyseLaunch(rpc, wallet, L, curve) {
   const bal = tokenBalance(tx, wallet, L.mint);
   if (!bal.account || bal.post === 0n) { out.devBoughtAtLaunch = false; out.devSoldPct1h = null; out.note = 'Creator did not buy in the launch transaction, so there is nothing to measure selling against.'; return out; }
   out.devBoughtAtLaunch = true;
+  out.ageMinutes = Math.floor((Date.now() / 1000 - L.blockTime) / 60);
+  out.firstHourFinished = Date.now() / 1000 >= L.blockTime + HOUR;
   const start = bal.post;
   const sigs = await rpc('getSignaturesForAddress', [bal.account, { limit: 100 }]);
   const inWindow = sigs.filter((s) => !s.err && s.signature !== L.signature && s.blockTime && s.blockTime > L.blockTime && s.blockTime <= L.blockTime + HOUR);
