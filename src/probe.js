@@ -6,7 +6,8 @@
 const PUMP = '6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 // First 8 bytes of the instruction data for pump.fun "create" and "createV2". Both put the mint first and the bonding curve third.
 const CREATE_DISC = [[24, 30, 200, 40, 5, 28, 7, 119], [214, 144, 76, 236, 95, 139, 49, 180]].map((a) => Buffer.from(a).toString('hex'));
-const MAX_SIGS = 100;       // newest signatures scanned for launches
+const MAX_PAGES = 10;       // up to 10,000 signatures of history
+const SCAN_OLD = 60, SCAN_NEW = 40; // launches usually sit at the start of a launcher wallet's history, so scan both ends
 const MAX_DETAIL = 6;       // newest launches analysed in depth
 const HOUR = 3600;
 
@@ -145,8 +146,17 @@ async function probe(wallet, rpcUrl, fetchImpl) {
   if (!rpcUrl) throw new Error('RPC_URL is not set.');
   const rpc = makeRpc(rpcUrl, fetchImpl);
   const t0 = Date.now();
-  const sigs = await rpc('getSignaturesForAddress', [wallet, { limit: 1000 }]);
-  const result = { wallet, sample: false, scannedSignatures: Math.min(sigs.length, MAX_SIGS), historyComplete: sigs.length < 1000 };
+  // Page back through the wallet's history (cheap calls) so we can see its true oldest transaction.
+  let sigs = [], before, pages = 0;
+  while (pages < MAX_PAGES) {
+    const page = await rpc('getSignaturesForAddress', [wallet, before ? { limit: 1000, before } : { limit: 1000 }]);
+    sigs = sigs.concat(page);
+    pages++;
+    if (page.length < 1000) break;
+    before = page[page.length - 1].signature;
+  }
+  const complete = pages < MAX_PAGES || sigs.length % 1000 !== 0;
+  const result = { wallet, sample: false, totalSignaturesSeen: sigs.length, historyComplete: complete };
 
   // Wallet age and who first funded it, from the oldest transaction we can see.
   if (sigs.length) {
@@ -154,7 +164,7 @@ async function probe(wallet, rpcUrl, fetchImpl) {
     result.firstSeen = first.blockTime ? new Date(first.blockTime * 1000).toISOString() : null;
     result.ageDays = first.blockTime ? Math.floor((Date.now() / 1000 - first.blockTime) / 86400) : null;
     result.ageIsMinimum = !result.historyComplete;
-    if (result.historyComplete) {
+    {
       const tx = await getTx(rpc, first.signature);
       if (tx && tx.meta) {
         const keys = keysOf(tx), idx = keys.indexOf(wallet);
@@ -168,11 +178,14 @@ async function probe(wallet, rpcUrl, fetchImpl) {
   }
 
   // Scan the newest signatures for pump.fun launches.
-  const recent = sigs.filter((s) => !s.err).slice(0, MAX_SIGS);
+  const ok = sigs.filter((s) => !s.err);
+  const seen = new Set();
+  const recent = ok.slice(-SCAN_OLD).concat(ok.slice(0, SCAN_NEW)).filter((s) => !seen.has(s.signature) && seen.add(s.signature));
+  result.scannedSignatures = recent.length;
   const txs = await pool(recent, 4, async (s) => { const tx = await getTx(rpc, s.signature).catch(() => null); const c = findCreate(tx); return c ? { ...c, signature: s.signature, blockTime: s.blockTime } : null; });
   const launches = txs.filter(Boolean);
   result.launchesFound = launches.length;
-  if (!launches.length) { result.launches = []; result.note = 'No pump.fun launches found in the newest ' + result.scannedSignatures + ' transactions of this wallet. If this is a wallet that only trades, that is expected. If it launches from a different wallet, use that one.'; result.tookMs = Date.now() - t0; return result; }
+  if (!launches.length) { result.launches = []; result.note = 'No pump.fun launches found in the ' + result.scannedSignatures + ' oldest and newest transactions checked (of ' + sigs.length + '). If this is a wallet that only trades, that is expected. If it launches from a different wallet, use that one.'; result.tookMs = Date.now() - t0; return result; }
 
   const accts = await rpc('getMultipleAccounts', [launches.map((l) => l.bondingCurve), { encoding: 'base64' }]);
   const curves = accts.value.map((a) => (a && a.data ? readCurve(a.data[0]) : null));
